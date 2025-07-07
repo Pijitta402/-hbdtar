@@ -1,0 +1,852 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+  <title>Happy Birthday</title>
+  <script src="https://unpkg.com/@dotlottie/player-component@2.7.12/dist/dotlottie-player.mjs" type="module"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@400&family=Mali:wght@400&display=swap');
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      width: 100vw;
+      height: 100vh;
+      overflow-x: hidden;
+      overflow-y: hidden;
+      font-family: 'Mali', sans-serif;
+      background: linear-gradient(to bottom, #ffe6f0, #e0f7fa);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      position: relative;
+    }
+
+    .container {
+      padding: 2vw;
+      width: 90%;
+      max-width: 800px;
+      margin: 0 auto;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .hide {
+      display: none;
+    }
+
+    h1 {
+      color: #ff69b4;
+      font-size: clamp(1.5rem, 5vw, 2.5rem);
+      margin: 0;
+      font-family: 'Fredoka', sans-serif;
+      opacity: 0;
+      transition: opacity 1s ease-in-out;
+    }
+
+    p {
+      color: #333;
+      font-size: clamp(0.8rem, 2.5vw, 1rem);
+      margin: 0.5rem 0;
+      opacity: 0;
+      transition: opacity 1s ease-in-out;
+    }
+
+    .emojis {
+      font-size: clamp(1.2rem, 3vw, 1.5rem);
+      margin: 0.5rem 0;
+      display: flex;
+      justify-content: center;
+      gap: 0.5rem;
+      opacity: 0;
+      transition: opacity 1s ease-in-out;
+    }
+
+    .decor {
+      position: absolute;
+      font-size: clamp(0.8rem, 2.5vw, 1.2rem);
+      animation: float 2s ease-in-out infinite;
+    }
+
+    .top-left { top: 1rem; left: 1rem; }
+    .top-right { top: 1rem; right: 1rem; }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+    }
+
+    @keyframes bounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+    }
+
+    @keyframes wiggle {
+      0%, 100% { transform: rotate(0deg); }
+      25% { transform: rotate(-5deg); }
+      75% { transform: rotate(5deg); }
+    }
+
+    @keyframes slideUp {
+      0% { transform: translateY(0); opacity: 1; }
+      100% { transform: translateY(-100px); opacity: 0; }
+    }
+
+    @keyframes fadeIn {
+      0% { opacity: 0; }
+      100% { opacity: 1; }
+    }
+
+    @keyframes slideFromBottom {
+      0% { transform: translateY(100px); opacity: 0; }
+      100% { transform: translateY(0); opacity: 1; }
+    }
+
+    @keyframes heartFloatUp {
+      0% {
+        transform: translateY(0) rotate(0deg);
+        opacity: 0.8;
+      }
+      100% {
+        transform: translateY(-100vh) rotate(360deg);
+        opacity: 0;
+      }
+    }
+
+    .lottie-container {
+      margin: 1rem 0;
+      position: relative;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .lottie-container img {
+      width: clamp(100px, 30vw, 200px);
+      height: clamp(100px, 30vw, 200px);
+      object-fit: contain;
+      animation: wiggle 2s ease-in-out infinite;
+      z-index: 1;
+      position: relative;
+      left: -20px;
+    }
+
+    .speech-bubble {
+      position: absolute;
+      top: -20%;
+      right: 5%;
+      background: white;
+      padding: 0.8rem;
+      border-radius: 0.8rem;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+      font-size: clamp(0.7rem, 2vw, 0.9rem);
+      color: #333;
+      font-family: 'Mali', sans-serif;
+      animation: float 3s ease-in-out infinite;
+      visibility: hidden;
+      opacity: 0;
+      transition: opacity 1s ease-in-out, visibility 1s ease-in-out;
+      max-width: 60%;
+    }
+
+    .speech-bubble.show {
+      visibility: visible;
+      opacity: 1;
+    }
+
+    .speech-bubble.second {
+      top: 10%;
+      right: -20px;
+    }
+
+    .speech-bubble::after {
+      content: '';
+      position: absolute;
+      bottom: -8px;
+      right: 15%;
+      border-width: 8px;
+      border-style: solid;
+      border-color: white transparent transparent transparent;
+    }
+
+    .speech-bubble.second::after {
+      right: 8px;
+    }
+
+    .new-image-container {
+      margin: 1rem 0;
+      position: relative;
+      display: none;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .new-image-container img {
+      width: clamp(100px, 30vw, 200px);
+      height: clamp(100px, 30vw, 200px);
+      object-fit: contain;
+      animation: wiggle 2s ease-in-out infinite;
+      z-index: 1;
+      position: relative;
+      left: -20px;
+    }
+
+    .lottie-animation-container {
+      margin: 1rem 0;
+      position: relative;
+      display: none;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .lottie-animation-container dotlottie-player {
+      width: clamp(100px, 30vw, 200px);
+      height: clamp(100px, 30vw, 200px);
+      object-fit: contain;
+      animation: wiggle 2s ease-in-out infinite;
+      z-index: 1;
+      position: relative;
+      left: -20px;
+    }
+
+    .final-lottie-container {
+      margin: 1rem 0;
+      position: relative;
+      display: none;
+      justify-content: center;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .final-lottie-container dotlottie-player {
+      width: clamp(100px, 30vw, 200px);
+      height: clamp(100px, 30vw, 200px);
+      object-fit: contain;
+      animation: wiggle 2s ease-in-out infinite;
+      z-index: 1;
+    }
+
+    .final-speech-bubble {
+      background: white;
+      padding: 0.8rem;
+      border-radius: 0.8rem;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+      font-size: clamp(0.7rem, 2vw, 0.9rem);
+      color: #333;
+      font-family: 'Mali', sans-serif;
+      animation: float 3s ease-in-out infinite;
+      visibility: hidden;
+      opacity: 0;
+      transition: opacity 1s ease-in-out, visibility 1s ease-in-out;
+      margin-bottom: 0.5rem;
+      max-width: 80%;
+    }
+
+    .final-speech-bubble.show {
+      visibility: visible;
+      opacity: 1;
+    }
+
+    .final-speech-bubble::after {
+      content: '';
+      position: absolute;
+      bottom: -8px;
+      right: 15%;
+      border-width: 8px;
+      border-style: solid;
+      border-color: white transparent transparent transparent;
+    }
+
+    .last-lottie-container {
+      margin: 1rem 0;
+      position: relative;
+      display: none;
+      justify-content: center;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .last-lottie-container dotlottie-player {
+      width: clamp(100px, 30vw, 200px);
+      height: clamp(100px, 30vw, 200px);
+      object-fit: contain;
+      animation: wiggle 2s ease-in-out infinite;
+      z-index: 1;
+    }
+
+    .last-speech-bubble {
+      background: white;
+      padding: 0.8rem;
+      border-radius: 0.8rem;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+      font-size: clamp(0.7rem, 2vw, 0.9rem);
+      color: #333;
+      font-family: 'Mali', sans-serif;
+      animation: float 3s ease-in-out infinite;
+      visibility: hidden;
+      opacity: 0;
+      transition: opacity 1s ease-in-out, visibility 1s ease-in-out;
+      text-align: center;
+      max-width: 80%;
+    }
+
+    .last-speech-bubble.show {
+      visibility: visible;
+      opacity: 1;
+    }
+
+    .last-speech-bubble::after {
+      content: '';
+      position: absolute;
+      bottom: -8px;
+      right: 15%;
+      border-width: 8px;
+      border-style: solid;
+      border-color: white transparent transparent transparent;
+    }
+
+    .last-lottie-container.slide-up,
+    .last-speech-bubble.slide-up {
+      animation: slideUp 1s ease-in-out forwards;
+    }
+
+    .birthday-wish-container {
+      margin: 1rem 0;
+      position: relative;
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .birthday-speech-bubble {
+      position: absolute;
+      top: -20%;
+      background: white;
+      padding: 0.8rem;
+      border-radius: 0.8rem;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+      font-size: clamp(0.7rem, 2vw, 0.9rem);
+      color: #333;
+      font-family: 'Mali', sans-serif;
+      animation: float 3s ease-in-out infinite;
+      visibility: hidden;
+      opacity: 0;
+      transition: opacity 1s ease-in-out, visibility 1s ease-in-out;
+      text-align: center;
+      max-width: 80%;
+    }
+
+    .birthday-speech-bubble.show {
+      visibility: visible;
+      opacity: 1;
+    }
+
+    .birthday-speech-bubble::after {
+      content: '';
+      position: absolute;
+      bottom: -8px;
+      right: 15%;
+      border-width: 8px;
+      border-style: solid;
+      border-color: white transparent transparent transparent;
+    }
+
+    .birthday-wish-images {
+      display: flex;
+      flex-direction: row;
+      justify-content: center;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+    }
+
+    .birthday-wish-images img,
+    .birthday-wish-images dotlottie-player {
+      width: clamp(60px, 15vw, 100px);
+      height: clamp(60px, 15vw, 100px);
+      object-fit: contain;
+      animation: wiggle 2s ease-in-out infinite;
+      z-index: 1;
+    }
+
+    .birthday-wish-container.fade-in {
+      animation: fadeIn 1s ease-in-out forwards;
+    }
+
+    .new-speech-bubble {
+      position: absolute;
+      background: white;
+      padding: 0.8rem;
+      border-radius: 0.8rem;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+      font-size: clamp(0.7rem, 2vw, 0.9rem);
+      color: #333;
+      font-family: 'Mali', sans-serif;
+      animation: float 3s ease-in-out infinite;
+      visibility: hidden;
+      opacity: 0;
+      transition: opacity 1s ease-in-out, visibility 1s ease-in-out;
+      max-width: 60%;
+    }
+
+    .new-speech-bubble.show {
+      visibility: visible;
+      opacity: 1;
+    }
+
+    .new-speech-bubble.bubble1 {
+      top: -20%;
+      right: 5%;
+    }
+
+    .new-speech-bubble.bubble2 {
+      top: 10%;
+      right: -20px;
+    }
+
+    .new-speech-bubble.bubble3 {
+      top: 40%;
+      right: 5%;
+    }
+
+    .new-speech-bubble.bubble4 {
+      top: 70%;
+      right: -20px;
+    }
+
+    .new-speech-bubble.bubble5 {
+      top: 110%;
+      right: 5%;
+    }
+
+    .new-speech-bubble.bubble6 {
+      top: 120%;
+      right: 5%;
+    }
+
+    .gift-box-container {
+      margin: 1rem 0;
+      position: relative;
+      display: none;
+      justify-content: center;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .gift-box-container dotlottie-player {
+      width: clamp(100px, 30vw, 200px);
+      height: clamp(100px, 30vw, 200px);
+      object-fit: contain;
+      animation: bounce 2s ease-in-out infinite;
+      z-index: 1;
+      cursor: pointer;
+    }
+
+    .gift-speech-bubble {
+      background: white;
+      padding: 0.8rem;
+      border-radius: 0.8rem;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+      font-size: clamp(0.7rem, 2vw, 0.9rem);
+      color: #333;
+      font-family: 'Mali', sans-serif;
+      animation: float 3s ease-in-out infinite;
+      visibility: hidden;
+      opacity: 0;
+      transition: opacity 1s ease-in-out, visibility 1s ease-in-out;
+      margin-bottom: 0.5rem;
+      max-width: 80%;
+    }
+
+    .gift-speech-bubble.show {
+      visibility: visible;
+      opacity: 1;
+    }
+
+    .gift-speech-bubble::after {
+      content: '';
+      position: absolute;
+      bottom: -8px;
+      right: 15%;
+      border-width: 8px;
+      border-style: solid;
+      border-color: white transparent transparent transparent;
+    }
+
+    .final-wish-container {
+      margin: 1rem 0;
+      position: relative;
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .final-wish-container.show {
+      display: flex;
+      animation: fadeIn 1s ease-in-out forwards;
+    }
+
+    .final-wish-images {
+      position: absolute;
+      top: 0;
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      z-index: 2;
+    }
+
+    .final-wish-images img {
+      width: clamp(60px, 15vw, 100px);
+      height: clamp(60px, 15vw, 100px);
+      object-fit: cover;
+      border: 2px solid #fff;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+      background: #fff;
+      padding: 5px;
+    }
+
+    .final-wish-images .photo-left {
+      transform: translateX(-20px) rotate(-5deg);
+      margin-left: 1rem;
+    }
+
+    .final-wish-images .photo-right {
+      transform: translateX(20px) rotate(5deg);
+      margin-right: 1rem;
+    }
+
+    .heart {
+      position: absolute;
+      font-size: clamp(0.4rem, 1.5vw, 0.8rem);
+      color: #ff69b4;
+      opacity: 0.8;
+      z-index: 0;
+      bottom: 0;
+    }
+
+    @media (max-width: 600px) {
+      .container {
+        padding: 1rem;
+      }
+
+      .speech-bubble, .new-speech-bubble, .final-speech-bubble, .last-speech-bubble, .birthday-speech-bubble, .gift-speech-bubble {
+        top: -30%;
+        right: 5%;
+        padding: 0.5rem;
+        max-width: 70%;
+      }
+
+      .speech-bubble.second, .new-speech-bubble.bubble2, .new-speech-bubble.bubble4 {
+        top: 0%;
+        right: -15px;
+      }
+
+      .speech-bubble::after, .new-speech-bubble::after, .final-speech-bubble::after, .last-speech-bubble::after, .birthday-speech-bubble::after, .gift-speech-bubble::after {
+        right: 10%;
+      }
+
+      .speech-bubble.second::after, .new-speech-bubble.bubble2::after, .new-speech-bubble.bubble4::after {
+        right: 8px;
+      }
+
+      .new-speech-bubble.bubble3 {
+        top: 30%;
+        right: 5%;
+      }
+
+      .new-speech-bubble.bubble4 {
+        top: 60%;
+        right: -15px;
+      }
+
+      .new-speech-bubble.bubble5 {
+        top: 100%;
+        right: 5%;
+      }
+
+      .new-speech-bubble.bubble6 {
+        top: 110%;
+        right: 5%;
+      }
+
+      .last-lottie-container {
+        flex-direction: column;
+        align-items: center;
+      }
+
+      .last-speech-bubble {
+        margin-bottom: 0.5rem;
+      }
+
+      .birthday-wish-images img,
+      .birthday-wish-images dotlottie-player {
+        width: clamp(50px, 12vw, 80px);
+        height: clamp(50px, 12vw, 80px);
+      }
+
+      .final-wish-images img {
+        width: clamp(50px, 12vw, 80px);
+        height: clamp(50px, 12vw, 80px);
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <span class="decor top-left slide-up">💖</span>
+    <span class="decor top-right slide-up">🎈</span>
+
+    <div class="lottie-container" id="panda-container">
+      <img src="https://cdn.pixabay.com/photo/2024/03/02/13/26/panda-8608564_640.png" alt="Panda Illustration" />
+      <div class="speech-bubble show">สวัสดีน้องตี๋หัวหยอง</div>
+      <div class="speech-bubble second" id="bubble2">ที่มองหน้าพี่นี่คือจะหาเรื่องหรือหารักจ๊ะ</div>
+    </div>
+
+    <div class="new-image-container" id="new-image-container">
+      <img src="https://cdn.pixabay.com/photo/2023/02/10/11/10/valentine-7780665_640.png" alt="New Illustration" />
+      <div class="new-speech-bubble bubble1" id="bubble3">น้องตี๋หัวหยองนี่เป็นใครเหรอแพนโบ</div>
+      <div class="new-speech-bubble bubble2" id="bubble4">ใช่คนที่หัวหยอยๆเหมือนฝอยขัดหม้อป่าว</div>
+      <div class="new-speech-bubble bubble3" id="bubble5">ใช่คนที่พุงใหญ่เหมือนบูป่ะ</div>
+      <div class="new-speech-bubble bubble4" id="bubble6">หรือเป็นคนที่กวนส้นตีนจนอยากถีบกันนะ</div>
+      <div class="new-speech-bubble bubble5" id="bubble7">หรือเป็นคนที่หน้าเหมือนหมาโกลเด้นใช่ป่าว</div>
+    </div>
+
+    <div class="lottie-animation-container" id="lottie-animation-container">
+      <dotlottie-player src="https://lottie.host/84d95786-bac1-4bad-94f0-aef13c1ad9d2/WrljpTIlbH.lottie" background="transparent" speed="1" loop autoplay></dotlottie-player>
+      <div class="new-speech-bubble bubble6" id="bubble8">เราดูดีกว่าเจ้าพุงโต หัวฟู นั่นตั้งเยอะ อย่ามาบูลลี่เรานะ เจ้าอ้วนแพนด้า ขอบตาดำ</div>
+    </div>
+
+    <div class="final-lottie-container" id="final-lottie-container">
+      <div class="final-speech-bubble" id="final-bubble">ใจเย็นๆน่าเจ้าหมาหน้ามู่ทู่ เราไปสืบมาว่าวันนี้เป็นวันเกิดของเจ้าพุงป่อง หัวหยองนั่นนะ</div>
+      <dotlottie-player src="https://lottie.host/01428967-1d09-423b-ba6e-f26b54bfa464/ZYNwy0uint.lottie" background="transparent" speed="1" loop autoplay></dotlottie-player>
+    </div>
+
+    <div class="last-lottie-container" id="last-lottie-container">
+      <div class="last-speech-bubble" id="last-bubble">
+        มันต้มว่าเจ้าต้าร์ตาตี่นั่นจะต้องแย่งมันต้มเกิดแน่ๆเลย<br>
+        มันต้มเลยต้องเกิดมาเป็นแมวสุดหล่อแทน<br>
+        สมน้ำหน้าเจ้าต้าร์ตาตี่ อดกินขนมแมวเลียแซ่บๆ
+      </div>
+      <dotlottie-player src="https://lottie.host/58a956be-21a4-4785-949d-9d84129192ff/p6gFizcwPI.lottie" background="transparent" speed="1" loop autoplay></dotlottie-player>
+    </div>
+
+    <div class="birthday-wish-container" id="birthday-wish-container">
+      <div class="birthday-speech-bubble" id="birthday-bubble">เรามาอวยพรวันเกิดให้เจ้าตาสองขีดนี่กันเถอะ</div>
+      <div class="birthday-wish-images">
+        <dotlottie-player src="https://lottie.host/58a956be-21a4-4785-949d-9d84129192ff/p6gFizcwPI.lottie" background="transparent" speed="1" loop autoplay></dotlottie-player>
+        <img src="https://cdn.pixabay.com/photo/2024/03/02/13/26/panda-8608564_640.png" alt="Panda Illustration" />
+        <img src="https://cdn.pixabay.com/photo/2023/02/10/11/10/valentine-7780665_640.png" alt="New Illustration" />
+        <dotlottie-player src="https://lottie.host/84d95786-bac1-4bad-94f0-aef13c1ad9d2/WrljpTIlbH.lottie" background="transparent" speed="1" loop autoplay></dotlottie-player>
+        <dotlottie-player src="https://lottie.host/01428967-1d09-423b-ba6e-f26b54bfa464/ZYNwy0uint.lottie" background="transparent" speed="1" loop autoplay></dotlottie-player>
+        <dotlottie-player src="https://lottie.host/6174c4e3-06c2-4259-bd67-5ea1636e7b68/E2iLBvdGFn.lottie" background="transparent" speed="1" loop autoplay></dotlottie-player>
+        <dotlottie-player src="https://lottie.host/fdfdaa48-14d0-4676-a334-01adf39bf25a/6ESesy18jP.lottie" background="transparent" speed="1" loop autoplay></dotlottie-player>
+        <dotlottie-player src="https://lottie.host/943980f0-ec51-4f13-8cb2-a96440045be1/kWJXss83TO.lottie" background="transparent" speed="1" loop autoplay></dotlottie-player>
+      </div>
+    </div>
+
+    <div class="gift-box-container" id="gift-box-container">
+      <div class="gift-speech-bubble" id="gift-bubble">หมาต้าร์พร้อมรึยัง ถ้าพร้อมแล้วกดตรงกล่องของขวัญ</div>
+      <dotlottie-player id="gift-box" src="https://lottie.host/385a2feb-6505-4299-8af2-0f9e488b0568/kSIxWfrMk7.lottie" background="transparent" speed="1" loop autoplay></dotlottie-player>
+    </div>
+
+    <div class="final-wish-container" id="final-wish-container">
+      <div class="final-wish-images">
+        <img src="picc/tar.jpg" alt="Photo 1" class="photo-left" />
+        <img src="picc/trrr.jpg" alt="Photo 2" class="photo-right" />
+      </div>
+      <h1 class="hide final-text">🎉 Happy Birthday To Tar! 🎉</h1>
+      <p class="hide final-text">สุขสันต์วันเกิดอายุครบ 31 ปี นะครับ! 🐼❤️</p>
+      <div class="emojis hide final-text">
+        <span>🎂</span> <span>🎈</span> <span>🎁</span> <span>🌸</span>
+      </div>
+      <p class="hide final-text">ยินดีกับต้าร์ด้วยนะที่พยายามจนสอบราชการติดตามที่หวัง เราเห็นความพยายามของต้าร์ <br>
+        มาตลอด 3 ปีกว่าที่รู้จักกันมา และชื่มชมว่าต้าร์เก่งจริงๆ จากนี้ด้าขอให้ต้าร์มีแต่ความสุขในชีวิต มีสุขภาพร่างกายที่แข็งแรง ถูกหวยบ่อยๆ ดวงดีๆเฮงๆ จะได้เอาไข่ต้มมาถวาย <br>
+        เจ้าแม่แพนด้า เราอาจจะพูดไม่เก่งแต่กินเก่งมาก หยอกๆ เราพูดไม่เก่งแต่เราก็อยากเห็นต้าร์มีความสุขในทุกๆช่วงชีวิต จากนี้เราจะอยู่เป็นเสียงหัวเราะให้แกเอง อยู่ด้วยกันให้เราอวยพรไปทุกๆปีนะ <br> 
+        จากเจ้ากรรมนายเวร ปล.ว่างวันไหนมารับเค้กวันเกิดย้อนหลังที่คนสวยนะจ๊ะ! 🥳</p>
+    </div>
+  </div>
+
+  <script>
+    function createHearts() {
+      const container = document.querySelector('.container');
+      for (let i = 0; i < 20; i++) {
+        const heart = document.createElement('span');
+        heart.classList.add('heart');
+        heart.innerHTML = '💖';
+        heart.style.left = `${Math.random() * 100}%`;
+        heart.style.animation = `heartFloatUp ${3 + Math.random() * 2}s linear infinite`;
+        heart.style.animationDelay = `${Math.random() * 5}s`;
+        container.appendChild(heart);
+      }
+    }
+
+    window.onload = function () {
+      // Apply slideUp to decor elements
+      setTimeout(() => {
+        document.querySelectorAll('.decor').forEach(el => {
+          el.classList.add('slide-up');
+          setTimeout(() => {
+            el.style.display = 'none';
+          }, 1000);
+        });
+      }, 24000);
+
+      // Show bubble2 after 1.5 seconds
+      setTimeout(() => {
+        document.getElementById('bubble2').classList.add('show');
+      }, 1500);
+
+      // Hide panda container after 3 seconds
+      setTimeout(() => {
+        const pandaContainer = document.getElementById('panda-container');
+        pandaContainer.classList.add('slide-up');
+        document.querySelectorAll('#panda-container .speech-bubble').forEach(bubble => {
+          bubble.classList.add('slide-up');
+        });
+        setTimeout(() => {
+          pandaContainer.style.display = 'none';
+        }, 1000);
+      }, 3000);
+
+      // Show new-image-container and bubbles
+      setTimeout(() => {
+        const newImageContainer = document.getElementById('new-image-container');
+        newImageContainer.style.display = 'flex';
+        newImageContainer.classList.add('fade-in');
+        document.getElementById('bubble3').classList.add('show');
+      }, 4000);
+
+      setTimeout(() => {
+        document.getElementById('bubble4').classList.add('show');
+      }, 5500);
+
+      setTimeout(() => {
+        document.getElementById('bubble5').classList.add('show');
+      }, 7000);
+
+      setTimeout(() => {
+        document.getElementById('bubble6').classList.add('show');
+      }, 8500);
+
+      setTimeout(() => {
+        document.getElementById('bubble7').classList.add('show');
+      }, 10000);
+
+      // Hide new-image-container
+      setTimeout(() => {
+        const newImageContainer = document.getElementById('new-image-container');
+        newImageContainer.classList.add('slide-up');
+        document.querySelectorAll('#new-image-container .new-speech-bubble').forEach(bubble => {
+          bubble.classList.add('slide-up');
+        });
+        setTimeout(() => {
+          newImageContainer.style.display = 'none';
+        }, 1000);
+      }, 12000);
+
+      // Show lottie-animation-container
+      setTimeout(() => {
+        const lottieAnimationContainer = document.getElementById('lottie-animation-container');
+        lottieAnimationContainer.style.display = 'flex';
+        lottieAnimationContainer.classList.add('fade-in');
+        document.getElementById('bubble8').classList.add('show');
+      }, 13000);
+
+      // Hide lottie-animation-container after 5 seconds
+      setTimeout(() => {
+        const lottieAnimationContainer = document.getElementById('lottie-animation-container');
+        lottieAnimationContainer.classList.add('slide-up');
+        document.getElementById('bubble8').classList.add('slide-up');
+        setTimeout(() => {
+          lottieAnimationContainer.style.display = 'none';
+        }, 1000);
+      }, 18000);
+
+      // Show final-lottie-container
+      setTimeout(() => {
+        const finalLottieContainer = document.getElementById('final-lottie-container');
+        finalLottieContainer.style.display = 'flex';
+        finalLottieContainer.classList.add('slide-from-bottom');
+        document.getElementById('final-bubble').classList.add('show');
+      }, 19000);
+
+      // Hide final-lottie-container
+      setTimeout(() => {
+        const finalLottieContainer = document.getElementById('final-lottie-container');
+        finalLottieContainer.classList.add('slide-up');
+        document.getElementById('final-bubble').classList.add('slide-up');
+        setTimeout(() => {
+          finalLottieContainer.style.display = 'none';
+        }, 1000);
+      }, 21000);
+
+      // Show last-lottie-container
+      setTimeout(() => {
+        const lastLottieContainer = document.getElementById('last-lottie-container');
+        lastLottieContainer.style.display = 'flex';
+        lastLottieContainer.classList.add('slide-from-bottom');
+        document.getElementById('last-bubble').classList.add('show');
+      }, 22000);
+
+      // Hide last-lottie-container after 7 seconds
+      setTimeout(() => {
+        const lastLottieContainer = document.getElementById('last-lottie-container');
+        lastLottieContainer.classList.add('slide-up');
+        document.getElementById('last-bubble').classList.add('slide-up');
+        setTimeout(() => {
+          lastLottieContainer.style.display = 'none';
+        }, 1000);
+      }, 29000);
+
+      // Show birthday-wish-container
+      setTimeout(() => {
+        const birthdayWishContainer = document.getElementById('birthday-wish-container');
+        birthdayWishContainer.style.display = 'flex';
+        birthdayWishContainer.classList.add('fade-in');
+        document.getElementById('birthday-bubble').classList.add('show');
+      }, 30000);
+
+      // Hide birthday-wish-container
+      setTimeout(() => {
+        const birthdayWishContainer = document.getElementById('birthday-wish-container');
+        birthdayWishContainer.classList.add('slide-up');
+        document.getElementById('birthday-bubble').classList.add('slide-up');
+        setTimeout(() => {
+          birthdayWishContainer.style.display = 'none';
+        }, 1000);
+      }, 32000);
+
+      // Show gift-box-container
+      setTimeout(() => {
+        const giftBoxContainer = document.getElementById('gift-box-container');
+        giftBoxContainer.style.display = 'flex';
+        giftBoxContainer.classList.add('fade-in');
+        document.getElementById('gift-bubble').classList.add('show');
+      }, 33000);
+
+      // Handle gift box click
+      document.getElementById('gift-box').addEventListener('click', () => {
+        const giftBoxContainer = document.getElementById('gift-box-container');
+        giftBoxContainer.classList.add('slide-up');
+        document.getElementById('gift-bubble').classList.add('slide-up');
+        setTimeout(() => {
+          giftBoxContainer.style.display = 'none';
+          const finalWishContainer = document.getElementById('final-wish-container');
+          finalWishContainer.classList.add('show');
+          document.querySelectorAll('.final-text').forEach(el => {
+            el.classList.remove('hide');
+            el.style.opacity = 1;
+          });
+          createHearts();
+        }, 1000);
+      });
+    };
+  </script>
+</body>
+</html>
